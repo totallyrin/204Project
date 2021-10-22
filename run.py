@@ -31,6 +31,15 @@ class FancyPropositions:
     def __repr__(self):
         return f"A.{self.data}"
 
+@proposition(E)
+class FancyPropositions:
+
+    def __init__(self, data):
+        self.data = data
+
+    def __repr__(self):
+        return f"A.{self.data}"
+
 
 # Call your variables whatever you want
 a = BasicPropositions("a")
