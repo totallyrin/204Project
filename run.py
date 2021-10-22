@@ -7,7 +7,7 @@ E = Encoding()
 
 # To create propositions, create classes for them first, annotated with "@proposition" and the Encoding
 @proposition(E)
-class BasicPropositions:
+class BasicProposition:
 
     def __init__(self, data):
         self.data = data
@@ -23,16 +23,7 @@ class BasicPropositions:
 # For a complete module reference, see https://bauhaus.readthedocs.io/en/latest/bauhaus.html
 @constraint.at_least_one(E)
 @proposition(E)
-class FancyPropositions:
-
-    def __init__(self, data):
-        self.data = data
-
-    def __repr__(self):
-        return f"A.{self.data}"
-
-@proposition(E)
-class FancyPropositions:
+class AtLeastOneProposition:
 
     def __init__(self, data):
         self.data = data
@@ -41,16 +32,30 @@ class FancyPropositions:
         return f"A.{self.data}"
 
 
-# Call your variables whatever you want
-a = BasicPropositions("a")
-b = BasicPropositions("b")
-c = BasicPropositions("c")
-d = BasicPropositions("d")
-e = BasicPropositions("e")
+# Basic Propositions
+# Patio Seating
+s = BasicProposition("s")
+# "Fast Food"
+f = BasicProposition("f")
+# Dietary restrictions
+# Vegetarian
+v = BasicProposition("v")
+# Dairy-free
+d = BasicProposition("d")
+# Halal
+h = BasicProposition("h")
+
 # At least one of these will be true
-x = FancyPropositions("x")
-y = FancyPropositions("y")
-z = FancyPropositions("z")
+# Rating
+r1 = AtLeastOneProposition("r1")
+r2 = AtLeastOneProposition("r2")
+r3 = AtLeastOneProposition("r3")
+r4 = AtLeastOneProposition("r4")
+r5 = AtLeastOneProposition("r5")
+# Price ($ or $$ or $$$)
+p1 = AtLeastOneProposition("p1")
+p2 = AtLeastOneProposition("p2")
+p3 = AtLeastOneProposition("p3")
 
 
 # Build an example full theory for your setting and return it.
@@ -60,20 +65,19 @@ z = FancyPropositions("z")
 #  what the expectations are.
 def example_theory():
     # Add custom constraints by creating formulas with the variables you created. 
-    E.add_constraint((a | b) & ~x)
+    # E.add_constraint((a | b) & ~x)
     # Implication
-    E.add_constraint(y >> z)
+    # E.add_constraint(y >> z)
     # Negate a formula
-    E.add_constraint((x & y).negate())
+    # E.add_constraint((x & y).negate())
     # You can also add more customized "fancy" constraints. Use case: you don't want to enforce "exactly one"
     # for every instance of BasicPropositions, but you want to enforce it for a, b, and c.:
-    constraint.add_exactly_one(E, a, b, c)
+    # constraint.add_exactly_one(E, a, b, c)
 
     return E
 
 
 if __name__ == "__main__":
-
     T = example_theory()
     # Don't compile until you're finished adding all your constraints!
     T = T.compile()
@@ -84,8 +88,8 @@ if __name__ == "__main__":
     print("   Solution: %s" % T.solve())
 
     print("\nVariable likelihoods:")
-    for v, vn in zip([a, b, c, x, y, z], 'abcxyz'):
-        # Ensure that you only send these functions NNF formulas
-        # Literals are compiled to NNF here
-        print(" %s: %.2f" % (vn, likelihood(T, v)))
+    #   for v, vn in zip([a, b, c, x, y, z], 'abcxyz'):
+    # Ensure that you only send these functions NNF formulas
+    # Literals are compiled to NNF here
+    #        print(" %s: %.2f" % (vn, likelihood(T, v)))
     print()
