@@ -1,0 +1,61 @@
+vegan
+  >>
+  vegetarian 
+      ovovegetarian if not egg allergic
+      lactovegetarian if not milk allergic/lactose intolerant (cheese is a dairy)
+      honey? not for babies. also a raw meat says fda
+      no meat means don't have to consider meat qualities like kosher or halal
+    >>
+    pescetarian
+        on fridays some catholics will only eat fish
+        are beavers fish? (yes) etc.
+     
+     >>
+     halal
+        >>
+        ramadan
+     >>
+     kosher
+        depends on strictness. could include touching, shellfish, etc, or not
+       
+       
+alcohol
+
+https://foodallergycanada.ca/food-allergy-basics/food-allergies-101/what-are-food-allergies/priority-food-allergens/
+https://www.fda.gov/food/food-labeling-nutrition/food-allergies#:~:text=This%20law%20identified%20eight%20foods,peanuts%2C%20wheat%2C%20and%20soybean.
+
+gluten intolerance/celiacs
+  apparently beer has gluten? sometimes? unless you buy the clear pisswater? idgi
+
+low fat or sodium
+  >>
+  no frieds? fish, fries/poutine, fritters, etc.
+     
+    
+price/rating
+  could do cumulative price if we force to calculate for multiple meals at once
+  neither borrower or lender be?
+  give individuals ability to have their own opinions of places/charisma stat/distrust of yelp
+  service quality (~~bub pubs~~)
+  
+dress code
+  
+parking/bike racks/walkable
+  injury?
+  what if needs to be transitable to somewhere else? only walk unless other options available
+
+working hours
+  just because is open now doesn't mean that the party is there right now
+  just because is open doesn't mean that they're accepting new customers
+  just because is open doesn't mean space is available/ppl want to queue/place is open when queue reaches party
+seating type
+  patio(weather)?
+  inside?
+    bar?
+    how densely packed? (give em social anxiety)
+  takeout?/delivery/pickup? drivethrough(needs car)?
+  
+
+consecutive instance
+  don't want to go to same place multiple times unless allowed.
+  consider whether open, money in wallet, clothes available
