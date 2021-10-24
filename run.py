@@ -16,11 +16,27 @@ class BasicProposition:
         return f"A.{self.data}"
 
 
+# Basic Propositions
+# Patio Seating
+s = BasicProposition("s")
+# "Fast Food"
+f = BasicProposition("f")
+
+# Dietary restrictions
+# Vegetarian
+v = BasicProposition("v")
+# Dairy-free
+d = BasicProposition("d")
+# Halal
+h = BasicProposition("h")
+
 # Different classes for propositions are useful because this allows for more dynamic constraint creation
 # for propositions within that class. For example, you can enforce that "at least one" of the propositions
 # that are instances of this class must be true by using a @constraint decorator.
 # other options include: at most one, exactly one, at most k, and implies all.
 # For a complete module reference, see https://bauhaus.readthedocs.io/en/latest/bauhaus.html
+
+
 @constraint.exactly_one(E)
 @proposition(E)
 class Rating:
@@ -32,6 +48,14 @@ class Rating:
         return f"A.{self.data}"
 
 
+# Rating
+r1 = Rating(1)
+r2 = Rating(2)
+r3 = Rating(3)
+r4 = Rating(4)
+r5 = Rating(5)
+
+
 @constraint.exactly_one(E)
 @proposition(E)
 class Price:
@@ -41,6 +65,12 @@ class Price:
 
     def __repr__(self):
         return f"A.{self.data}"
+
+
+# Price ($ or $$ or $$$)
+p1 = Price(1)
+p2 = Price(2)
+p3 = Price(3)
 
 
 @constraint.at_least_one(E)
@@ -57,34 +87,6 @@ class Seating:
 numSeating = {
 
 }
-
-# Restaurant Properties
-
-# Basic Propositions
-# Patio Seating
-s = BasicProposition("s")
-# "Fast Food"
-f = BasicProposition("f")
-
-# Dietary restrictions
-# Vegetarian
-v = BasicProposition("v")
-# Dairy-free
-d = BasicProposition("d")
-# Halal
-h = BasicProposition("h")
-
-# Exactly one of these will be true
-# Rating
-r1 = Rating(1)
-r2 = Rating(2)
-r3 = Rating(3)
-r4 = Rating(4)
-r5 = Rating(5)
-# Price ($ or $$ or $$$)
-p1 = Price(1)
-p2 = Price(2)
-p3 = Price(3)
 
 
 # Build an example full theory for your setting and return it.
