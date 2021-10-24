@@ -21,7 +21,7 @@ class BasicProposition:
 # that are instances of this class must be true by using a @constraint decorator.
 # other options include: at most one, exactly one, at most k, and implies all.
 # For a complete module reference, see https://bauhaus.readthedocs.io/en/latest/bauhaus.html
-@constraint.at_least_one(E)
+@constraint.exactly_one(E)
 @proposition(E)
 class Rating:
 
@@ -31,7 +31,8 @@ class Rating:
     def __repr__(self):
         return f"A.{self.data}"
 
-@constraint.at_least_one(E)
+
+@constraint.exactly_one(E)
 @proposition(E)
 class Price:
 
@@ -42,11 +43,29 @@ class Price:
         return f"A.{self.data}"
 
 
+@constraint.at_least_one(E)
+@proposition(E)
+class Seating:
+
+    def __init__(self, data):
+        self.data = data
+
+    def __repr__(self):
+        return f"A.{self.data}"
+
+
+numSeating = {
+
+}
+
+# Restaurant Properties
+
 # Basic Propositions
 # Patio Seating
 s = BasicProposition("s")
 # "Fast Food"
 f = BasicProposition("f")
+
 # Dietary restrictions
 # Vegetarian
 v = BasicProposition("v")
@@ -55,17 +74,17 @@ d = BasicProposition("d")
 # Halal
 h = BasicProposition("h")
 
-# At least one of these will be true
+# Exactly one of these will be true
 # Rating
-r1 = Rating("r1")
-r2 = Rating("r2")
-r3 = Rating("r3")
-r4 = Rating("r4")
-r5 = Rating("r5")
+r1 = Rating(1)
+r2 = Rating(2)
+r3 = Rating(3)
+r4 = Rating(4)
+r5 = Rating(5)
 # Price ($ or $$ or $$$)
-p1 = Price("p1")
-p2 = Price("p2")
-p3 = Price("p3")
+p1 = Price(1)
+p2 = Price(2)
+p3 = Price(3)
 
 
 # Build an example full theory for your setting and return it.
