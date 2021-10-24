@@ -37,11 +37,11 @@ def convert_properties():
 
 # List of restaurants, format [name, #seats, rating, price, dietary, 'fast-food', seating, parking, service, hours]
 restaurants = [
-    ["McDonald's", 2, 3, "$", ["veg", "gluten"], True, ["indoor"], ["bike"], ["take-out", "eat-in", "delivery"], [6,
+    ["McDonald's", 2, 3, 1, ["veg", "gluten"], True, ["indoor"], ["bike"], ["take-out", "eat-in", "delivery"], [6,
                                                                                                                   22]],
-    ["Lone Star", 8, 4, "$$", ["gluten"], False, ["indoor"], ["bike", "vehicle"], ["take-out", "eat-in", "delivery"],
+    ["Lone Star", 8, 4, 2, ["gluten"], False, ["indoor"], ["bike", "vehicle"], ["take-out", "eat-in", "delivery"],
      [11, 22]],
-    ["Tommy's", 4, 4, "$", ["gluten"], True, ["indoor", "outdoor"], ["bike", "vehicle"], ["take-out", "eat-in",
+    ["Tommy's", 4, 4, 1, ["gluten"], True, ["indoor", "outdoor"], ["bike", "vehicle"], ["take-out", "eat-in",
                                                                                           "delivery"], [8, 2]]
 ]
 
