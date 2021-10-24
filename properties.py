@@ -1,9 +1,8 @@
 # file to store properties of different restaurants
-
-# num of seats
 from pprint import pprint
 
 
+# function to add values to dictionary, create new keys if no pre-existing
 def add_element(dic, key, val):
     if key in dic:
         dic[key].append(val)
@@ -12,8 +11,9 @@ def add_element(dic, key, val):
     return dic
 
 
+# convert properties from restaurants list to a list of dictionaries of properties
 def convert_properties():
-    seats = {}
+    seats = {}  # num of seats
     rating = {}  # rating
     price = {}  # price ($, $$, $$$)
     dietary = {}  # dietary considerations
@@ -35,6 +35,7 @@ def convert_properties():
     return properties
 
 
+# List of restaurants, format [name, #seats, rating, price, dietary, 'fast-food', seating, parking, service, hours]
 restaurants = [
     ["McDonald's", 2, 3, "$", ["veg", "gluten"], True, ["indoor"], ["bike"], ["take-out", "eat-in", "delivery"], [6,
                                                                                                                   22]],
@@ -44,5 +45,6 @@ restaurants = [
                                                                                           "delivery"], [8, 2]]
 ]
 
+# test
 if __name__ == "__main__":
     pprint(convert_properties())
