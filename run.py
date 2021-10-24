@@ -23,7 +23,17 @@ class BasicProposition:
 # For a complete module reference, see https://bauhaus.readthedocs.io/en/latest/bauhaus.html
 @constraint.at_least_one(E)
 @proposition(E)
-class AtLeastOneProposition:
+class Rating:
+
+    def __init__(self, data):
+        self.data = data
+
+    def __repr__(self):
+        return f"A.{self.data}"
+
+@constraint.at_least_one(E)
+@proposition(E)
+class Price:
 
     def __init__(self, data):
         self.data = data
@@ -47,15 +57,15 @@ h = BasicProposition("h")
 
 # At least one of these will be true
 # Rating
-r1 = AtLeastOneProposition("r1")
-r2 = AtLeastOneProposition("r2")
-r3 = AtLeastOneProposition("r3")
-r4 = AtLeastOneProposition("r4")
-r5 = AtLeastOneProposition("r5")
+r1 = Rating("r1")
+r2 = Rating("r2")
+r3 = Rating("r3")
+r4 = Rating("r4")
+r5 = Rating("r5")
 # Price ($ or $$ or $$$)
-p1 = AtLeastOneProposition("p1")
-p2 = AtLeastOneProposition("p2")
-p3 = AtLeastOneProposition("p3")
+p1 = Price("p1")
+p2 = Price("p2")
+p3 = Price("p3")
 
 
 # Build an example full theory for your setting and return it.
