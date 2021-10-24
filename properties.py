@@ -1,6 +1,8 @@
 # file to store properties of different restaurants
 
 # num of seats
+from pprint import pprint
+
 seats = {}
 
 # rating
@@ -27,6 +29,8 @@ service = {}
 # open morning, afternoon, evenings, nights
 hours = {}
 
+properties = [seats, rating, price, dietary, fastFood, seating, parking, service, hours]
+
 restaurants = [
     ["McDonald's", 2, 3, "$", ["veg", "gluten"], True, ["indoor"], ["bike"], ["take-out", "eat-in", "delivery"], [6,
                                                                                                                   22]],
@@ -36,7 +40,18 @@ restaurants = [
                                                                                           "delivery"], [8, 2]]
 ]
 
+
 def getProperties():
     for restaurant in restaurants:
+        for i in range(0, len(properties)):
+            for i in range(len(properties[i])):
+                if restaurant[i + 1] == i:
+                    properties[i].get(i).append(restaurant[0])
+                else:
+                    properties[i][restaurant[i + 1]] = (restaurant[0])
 
-    return
+    pprint(properties)
+    return properties
+
+
+getProperties()
