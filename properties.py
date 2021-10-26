@@ -170,6 +170,7 @@ def define_restaurant(restaurants = restaurants_dict, prompts = prompts_dict):
         k = restaurant[0]
         p = restaurant[1:]
         for i in range(len(p)):
+            #if bool(p[i]) is False:
             if type(p[i]) is dict:
                 for j in p[i]:
                     #r_dict[name] > v_list[index] > old_h_dict[key]
@@ -179,12 +180,13 @@ def define_restaurant(restaurants = restaurants_dict, prompts = prompts_dict):
             elif type(p[i]) is list:
                 restaurants[k][i] = list(set(restaurants[k][i] + p[i]))
             #replaces current value unless is None entry
-            elif p[i] is not none:
+            elif p[i] is not None:
                 restaurants[k][i] = p[i]
             #None entry, prompts whether simply no new value or want to erase.
             else: 
                 restaurants[k][i] = None if input(
-                    "Enter '' to preserve current value >> ") else restaurants[k][i]
+                    "Enter '' to preserve current value "
+                    + str(restaurants[k][i]) + " >> ") else restaurants[k][i]
                     
     else:
         restaurants[restaurant[0]] = restaurant[1:]
