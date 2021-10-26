@@ -1,7 +1,9 @@
 from pprint import pprint
-
 from bauhaus import Encoding, proposition, constraint
 from bauhaus.utils import count_solutions, likelihood
+
+import properties
+from properties import *
 
 # Encoding that will store all of your constraints
 E = Encoding()
@@ -102,12 +104,20 @@ def solution():
     E.add_constraint(r1 >> r2 >> r3 >> r4 >> r5)
     E.add_constraint(p3 >> p2 >> p1)
 
+    # E.add_constraint(r1 >> r2)
+    # E.add_constraint(r2 >> r3)
+    # E.add_constraint(r3 >> r4)
+    # E.add_constraint(r4 >> r5)
+    #
+    # E.add_constraint(p3 >> p2)
+    # E.add_constraint(p2 >> p1)
+
     # E.add_constraint((a | b) & ~x)
     # E.add_constraint(y >> z)
     # E.add_constraint((x & y).negate())
     # constraint.add_exactly_one(E, a, b, c)
 
-    E.add_constraint((r4 & p3) | (r1 & p1 & f))
+    E.add_constraint((r4 & p3) | (r3 & p1 & f))
 
     return E
 
@@ -119,6 +129,15 @@ def displaySolution():
         if lis.get(key):
             result.append(key)
     return result
+
+
+# trying to write a function to return corresponding restaurant: TODO complete getRestaurants() function
+def getRestaurants():
+    properties.convert_properties()
+    lis = displaySolution()
+    for element in lis:
+        pass  # temp pass so code does not throw errors
+        # need a way of checking which restaurants have the corresponding properties
 
 
 if __name__ == "__main__":
