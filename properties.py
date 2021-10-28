@@ -1,6 +1,5 @@
 # file to store properties of different restaurants
 
-# num of seats
 from pprint import pprint
 
 prompts_dict = {"Name of the Establishment >> ": str,
@@ -11,7 +10,7 @@ prompts_dict = {"Name of the Establishment >> ": str,
                 "Is the Establishment Fast Food? >> ": bool,
                 "List of Seating Options ('indoor', 'outdoor'):": [str],
                 "List of Transit Options ('bike', 'vehicle'):": [str],
-                "List of Dining Options ('takeout', 'eatin', 'delivery'):": [str],
+                "List of Dining Options ('takeout', 'eat-in', 'delivery'):": [str],
                 # hours needs to be last to get special treatment
                 "Dict of Hours of Operation {day_index:[open_float,close_float]}": dict}
 
@@ -31,7 +30,7 @@ prompts_dict = {"Name of the Establishment >> ": str,
 restaurants_dict = {
     "McDonald's": [2, 3, 1, ["veg", "gluten"], True, ["indoor"], ["bike"], ["takeout", "eatin", "delivery"],
                    {0: [6, 22]}],
-    # they're actually only 6-22 inside, 24h drivethru
+    # they're actually only 6-22 inside, 24h drive-through
     "Lone Star": [8, 4, 2, ["gluten"], False, ["indoor"], ["bike", "vehicle"], ["takeout", "eatin", "delivery"],
                   {0: [11, 22], 4: [11, 23], 5: [11, 23]}],
     "Tommy's": [4, 4, 1, ["gluten"], True, ["indoor", "outdoor"], ["bike", "vehicle"], ["takeout", "eatin", "delivery"],
@@ -52,7 +51,7 @@ def decode_hours(time_dict):
        so the system has to handle half-hours.
        don't really care about having too many data points in storage
        mostly worried about trawling through the relevant slots
-        which have to be a list/keylist of some sort
+        which have to be a list/key list of some sort
 
        need to check for entire duration of use. do not forget.
 
@@ -89,7 +88,6 @@ def fill_in_hours(hours_sh):
 
 
         returns the expanded list of True/False
-
     """
     time_bools = []
     open_bool = False  # default is starts closed at midnight
@@ -115,8 +113,6 @@ def restrict_input_type(prompt, input_type):
         note that dict is to allow unique prompts, and so is
           inherently a null-term input list, and so expect to
           use singletons for values.
-
-
     """
     if type(input_type) is dict:
         print(prompt)
@@ -149,7 +145,7 @@ def restrict_input_type(prompt, input_type):
             elif input_type is float and type(temp) is int:
                 return float(temp)
             # else continue
-            print("uhoh! that didn't match the type", input_type)
+            print("uh-oh! that didn't match the type", input_type)
 
 
 def split_input_type_dict(type_dict):
@@ -161,7 +157,7 @@ def split_input_type_dict(type_dict):
 
 
 def define_restaurant(restaurants=restaurants_dict, prompts=prompts_dict):
-    # '''need to append/overwrite if already existing'''
+    # need to append/overwrite if already existing
     print("When a property can take multiple entries, an empty line terminates.")
     restaurant = split_input_type_dict(prompts)
 
@@ -232,5 +228,5 @@ def convert_properties(restaurants=restaurants_dict):
 
 
 if __name__ == "__main__":
-    # pprint(convert_properties(restaurantsDict))
     conved = convert_properties()
+    pprint(conved)

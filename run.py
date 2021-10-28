@@ -102,6 +102,9 @@ u = Service("Delivery")
 #  what the expectations are.
 def solution():
     E.add_constraint(r1 >> r2 >> r3 >> r4 >> r5)
+    # E.add_constraint(r2 >> r3 >> r4 >> r5)
+    # E.add_constraint(r3 >> r4 >> r5)
+    # E.add_constraint(r4 >> r5)
     E.add_constraint(p3 >> p2 >> p1)
 
     # E.add_constraint(r1 >> r2)
@@ -127,16 +130,18 @@ def displaySolution():
     lis = T.solve()
     for key in lis.keys():
         if lis.get(key):
-            result.append(key)
+            result.append(key.__repr__())
+    result.sort()
     return result
 
 
 # trying to write a function to return corresponding restaurant: TODO complete getRestaurants() function
 def getRestaurants():
-    properties.convert_properties()
+    converted = properties.convert_properties()
     lis = displaySolution()
-    for element in lis:
-        pass  # temp pass so code does not throw errors
+    for sublist in converted:
+        for key in sublist:
+            pass  # temp pass so code does not throw errors
         # need a way of checking which restaurants have the corresponding properties
 
 
