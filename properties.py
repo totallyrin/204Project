@@ -3,7 +3,6 @@
 from pprint import pprint
 
 prompts_dict = {"Name of the Establishment >> ": str,
-                "Number of Seats at Largest Table >> ": int,
                 "Number of Stars in Rating >> ": int,
                 "Number of Dollars of Cost >> ": int,
                 "List of Dietary Restrictions Serviced:": [str],
@@ -28,12 +27,12 @@ prompts_dict = {"Name of the Establishment >> ": str,
 '''
 
 restaurants_dict = {
-    "McDonald's": [2, 3, 1, ["veg", "gluten"], True, ["indoor"], ["bike"], ["takeout", "eatin", "delivery"],
+    "McDonald's": [3, 1, ["vegetarian", "gluten"], True, ["indoor"], ["bike"], ["takeout", "eat-in", "delivery"],
                    {0: [6, 22]}],
     # they're actually only 6-22 inside, 24h drive-through
-    "Lone Star": [8, 4, 2, ["gluten"], False, ["indoor"], ["bike", "vehicle"], ["takeout", "eatin", "delivery"],
+    "Lone Star": [4, 2, ["gluten"], False, ["indoor"], ["bike", "vehicle"], ["takeout", "eat-in", "delivery"],
                   {0: [11, 22], 4: [11, 23], 5: [11, 23]}],
-    "Tommy's": [4, 4, 1, ["gluten"], True, ["indoor", "outdoor"], ["bike", "vehicle"], ["takeout", "eatin", "delivery"],
+    "Tommy's": [4, 1, ["gluten"], True, ["indoor", "outdoor"], ["bike", "vehicle"], ["takeout", "eat-in", "delivery"],
                 {0: [0, 2, 8]}]
 }
 
@@ -189,7 +188,6 @@ def define_restaurant(restaurants=restaurants_dict, prompts=prompts_dict):
 
 
 def convert_properties(restaurants=restaurants_dict):
-    seats = {}
     rating = {}  # rating
     price = {}  # price ($, $$, $$$)
     dietary = {}  # dietary considerations
@@ -205,7 +203,7 @@ def convert_properties(restaurants=restaurants_dict):
              5: {},
              6: {}}
 
-    properties = [seats, rating, price, dietary, fastFood, seating, parking, service, hours]
+    properties = [rating, price, dietary, fastFood, seating, parking, service, hours]
 
     for r in restaurants:
         r_props = restaurants[r]
