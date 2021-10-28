@@ -2,7 +2,6 @@ from pprint import pprint
 from bauhaus import Encoding, proposition, constraint
 from bauhaus.utils import count_solutions, likelihood
 
-import properties
 from properties import *
 
 # Encoding that will store all of your constraints
@@ -104,16 +103,10 @@ u = Service("Delivery")
 #  what the expectations are.
 def solution():
     E.add_constraint(di & (i | o))  # dine-in means there must be either indoor or outdoor seating
-    E.add_constraint(r5 >> r4 >> r3 >> r2 >> r1)
+    E.add_constraint(f >> t)  # fast-food restaurants have take-out
 
-    E.add_constraint(p1 >> p2 >> p3)
-
-    # E.add_constraint((a | b) & ~x)
-    # E.add_constraint(y >> z)
-    # E.add_constraint((x & y).negate())
-    # constraint.add_exactly_one(E, a, b, c)
-
-    E.add_constraint((r4 & p3) | (r3 & p1 & f))
+    # E.add_constraint(r3 >> (r3 | r4 | r5))
+    # E.add_constraint(r3 & p2)
 
     return E
 
@@ -130,31 +123,35 @@ def displaySolution():
     return result
 
 
-# trying to write a function to return corresponding restaurant: TODO complete getRestaurants() function
-def getRestaurants():
-    props = [0, 0, [], False, [], [], []]  # rating, price, dietary, fastFood, seating, parking, service
-    dietary = ["Vegetarian", "Dairy-Free", "Halal"]
-    seating = ["Indoor", "Outdoor"]
-    parking = ["Vehicle", "Bike"]
-    service = ["Eat-in", "Take-out", "Delivery"]
-    converted = properties.convert_properties()
-    lis = displaySolution()
-    for element in lis:
-        if '*' in element:
-            props[0] = (int(element[0]))
-        elif '$' in element:
-            props[1] = (len(element))
-        elif element in dietary:
-            props[2].append(element.lower())
-        elif element == "Fast-food" and props[3] is False:
-            props[3] = True
-        elif element in seating:
-            props[4].append(element.lower())
-        elif element in parking:
-            props[5].append(element.lower())
-        elif element in service:
-            props[6].append(element.lower())
-    pprint(props)
+# trying to write a function to return corresponding restaurant
+# def getRestaurants():
+#     props = [0, 0, [], False, [], [], [], []]  # rating, price, dietary, fastFood, seating, parking, service, hours
+#     if not T.satisfiable():
+#         return props
+#     dietary = ["Vegetarian", "Dairy-Free", "Halal"]
+#     seating = ["Indoor", "Outdoor"]
+#     parking = ["Vehicle", "Bike"]
+#     service = ["Eat-in", "Take-out", "Delivery"]
+#     converted = properties.convert_properties()
+#     lis = displaySolution()
+#     for element in lis:
+#         if '*' in element:
+#             props[0] = (int(element[0]))
+#         elif '$' in element:
+#             props[1] = (len(element))
+#         elif element in dietary:
+#             props[2].append(element.lower())
+#         elif element == "Fast-food" and props[3] is False:
+#             props[3] = True
+#         elif element in seating:
+#             props[4].append(element.lower())
+#         elif element in parking:
+#             props[5].append(element.lower())
+#         elif element in service:
+#             props[6].append(element.lower())
+#     pprint(props)
+#     for j in range(len(props)):
+#         for key in converted[j]:
 
 
 if __name__ == "__main__":
@@ -169,7 +166,6 @@ if __name__ == "__main__":
     print()
     pprint(displaySolution())
     print()
-    getRestaurants()
     # print("\nVariable likelihoods:")
     #   for v, vn in zip([a, b, c, x, y, z], 'abcxyz'):
     # Ensure that you only send these functions NNF formulas
