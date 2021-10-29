@@ -105,6 +105,8 @@ def solution():
     E.add_constraint(di & (i | o))  # dine-in means there must be either indoor or outdoor seating
     E.add_constraint(f >> t)  # fast-food restaurants have take-out
 
+    # TODO: code for loop to add constraints
+
     # E.add_constraint(r3 >> (r3 | r4 | r5))
     # E.add_constraint(r3 & p2)
 
