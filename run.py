@@ -19,12 +19,18 @@ class BasicProposition:
         return f"{self.data}"
 
 
+for i in range(10):
+    exec('m' + str(i) + "=BasicProposition('m" + str(i) + "')")
+    print(eval("m" + str(i)).__repr__)
+
+
 # Basic Propositions
 f = BasicProposition("Fast-food")
 
 # Dietary restrictions
 v = BasicProposition("Vegetarian")
 d = BasicProposition("Dairy-free")
+g = BasicProposition("Gluten-free")
 h = BasicProposition("Halal")
 
 # Seating location
@@ -91,9 +97,9 @@ class Service:
 
 
 # dine-in, take-out, delivery
-di = Service("Eat-in")
+e = Service("Eat-in")
 t = Service("Take-out")
-u = Service("Delivery")
+delivery = Service("Delivery")
 
 
 # Build an example full theory for your setting and return it.
@@ -102,7 +108,9 @@ u = Service("Delivery")
 #  This restriction is fairly minimal, and if there is any concern, reach out to the teaching staff to clarify
 #  what the expectations are.
 def solution():
-    E.add_constraint(di & (i | o))  # dine-in means there must be either indoor or outdoor seating
+    # E.add_constraint(v | g | d | h | ~h | ~v | ~g | ~d)
+    E.add_constraint(~(~e & ~t & ~delivery))
+    E.add_constraint((e & (i | o)) | (~e & ~i & ~o))  # eat-in means there must be either indoor or outdoor seating
     E.add_constraint(f >> t)  # fast-food restaurants have take-out
 
     # TODO: code for loop to add constraints
