@@ -8,7 +8,7 @@ By taking boolean values for what can be tolerated of a restaurant, we can rule 
 ## Structure
 
 * `documents`: Contains folders. README.md files are included in both.
-* `Modelling_Project_Official.pdf`: The documentation of our project draft.
+* `report.pdf`: The documentation of our project draft.
 * `properties.py`: Holds our dictionary of restaurants. Tons of helper methods to handle abstraction and input.
 * `properties_sugg.txt`: Rough draft of our ideas. Mostly not yet implemented, a little bit tongue-in-cheek.
 * `run.py`: General wrapper script. Our attempts to produce propositions and constraints.
