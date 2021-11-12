@@ -18,6 +18,7 @@ class BasicProposition:
     def __repr__(self):
         return f"{self.data}"
 
+
 '''
 for i in range(10):
     exec('m' + str(i) + "=BasicProposition('m" + str(i) + "')")
@@ -85,20 +86,23 @@ p2 = Price("$$")
 p3 = Price("$$$")
 p4 = Price("$$$$")
 
-@constraint.add_exactly_one(E, Weather)
+
 @proposition(E)
 class Weather:
-    
+
     def __init_(self, data):
         self.data = data
-    
+
     def __repr__(self):
         return f"{self.data}"
+
 
 s = Weather("Sunny")
 n = Weather("Raining")
 w = Weather("Snowing")
-    
+
+
+@constraint.add_exactly_one(E, Weather)
 @constraint.at_least_one(E)
 @proposition(E)
 class Service:
@@ -124,7 +128,8 @@ delivery = Service("Delivery")
 def solution():
     # E.add_constraint(v | g | d | h | ~h | ~v | ~g | ~d)
     E.add_constraint(~(~e & ~t & ~delivery))
-    E.add_constraint((~(n | w)) | (e & i)) # if it's raining or snowing, we want to be able to eat in (eatin and indoors).
+    E.add_constraint(
+        (~(n | w)) | (e & i))  # if it's raining or snowing, we want to be able to eat in (eatin and indoors).
     E.add_constraint((e & (i | o)) | (~e & ~i & ~o))  # eat-in means there must be either indoor or outdoor seating
     E.add_constraint(f >> t)  # fast-food restaurants have take-out
 
@@ -144,17 +149,18 @@ def displaySolution():
     reject = []
     lis = T.solve()
     for key in lis.keys():
-        if lis.get(key): #create list of properties that fulfill all constraints
+        if lis.get(key):  # create list of properties that fulfill all constraints
             result.append(key.__repr__())
-        else: #remove those restaurants from consideration
+        else:  # remove those restaurants from consideration
             pass
-            #bauhaus doesn't like me, but I want each list of restaurants for each not acceptable property
-            #for r in properties.restaurants_dict[key][lis[key]]:
-                #reject += r #should be a list already, just does appends each element
-    #allowed = restaurantes - set(reject) #should perfore set difference
-    #pprint(allowed)
+            # bauhaus doesn't like me, but I want each list of restaurants for each not acceptable property
+            # for r in properties.restaurants_dict[key][lis[key]]:
+            # reject += r #should be a list already, just does appends each element
+    # allowed = restaurantes - set(reject) #should perfore set difference
+    # pprint(allowed)
     result.sort()
     return result
+
 
 # trying to write a function to return corresponding restaurant
 # def getRestaurants():
