@@ -126,15 +126,14 @@ delivery = Service("Delivery")
 #  This restriction is fairly minimal, and if there is any concern, reach out to the teaching staff to clarify
 #  what the expectations are.
 def solution():
-
     # TODO: code for loop to add constraints
 
     # If a person is willing to eat at a badly-rated restaurant, they would be happy to eat at a well-rated restaurant
     # r1 >> r2 >> r3 >> r4 >> r5
-    constraint.add_implies_all(E, [r1], [r2, r3, r4, r5])
-    constraint.add_implies_all(E, [r2], [r3, r4, r5])
-    constraint.add_implies_all(E, [r3], [r4, r5])
-    constraint.add_implies_all(E, [r4], [r5])
+    # constraint.add_implies_all(E, [r1], [r2, r3, r4, r5])
+    # constraint.add_implies_all(E, [r2], [r3, r4, r5])
+    # constraint.add_implies_all(E, [r3], [r4, r5])
+    # constraint.add_implies_all(E, [r4], [r5])
 
     # If a person is willing to pay $$$, then they would be happy to pay $$ or $ also.
     # p4 >> p3 >> p2 >> p1
@@ -205,13 +204,21 @@ def getRestaurants():
             props[5].append(element.lower())
         elif element in service:
             props[6].append(element.lower())
-    pprint(props)
 
-    restaurants = []
-    for j in range(len(props)):
-        for key in converted[j]:
-            if props[j] == key:
-                pass
+    restaurants = set()
+
+    for item in converted[0]:
+        if props[0] <= item:
+            restaurants = restaurants.union(set(converted[0][item]))
+
+    for item in converted[1]:
+        if props[1] >= item:
+            restaurants = restaurants.intersection(set(converted[1][item]))
+
+    for i in range(2, len(props) - 1): # -1 for hours
+        for item in converted[i]:
+            if props[i] == item:
+                restaurants = restaurants.intersection(set(converted[i][item]))
 
     return restaurants
 
@@ -228,7 +235,7 @@ if __name__ == "__main__":
     print()
     pprint(displaySolution())
     print()
-    pprint(getRestaurants())
+    print(getRestaurants())
     # print("\nVariable likelihoods:")
     #   for v, vn in zip([a, b, c, x, y, z], 'abcxyz'):
     # Ensure that you only send these functions NNF formulas
