@@ -29,7 +29,7 @@ prompts_dict = {"Name of the Establishment >> ": str,
 '''
 
 restaurants_dict = {
-    {'"Alana\'s Ice Cream"': [4,
+    '"Alana\'s Ice Cream"': [4,
                               2,
                               ['veg', 'halal'],
                               True,
@@ -196,7 +196,7 @@ restaurants_dict = {
                  ['indoor', 'outdoor'],
                  ['bike', 'vehicle'],
                  ['takeout', 'eatin', 'delivery'],
-                 {0: [0, 2, 8]}]}
+                 {0: [0, 2, 8]}]
 }
 
 

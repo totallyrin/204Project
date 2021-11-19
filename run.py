@@ -50,7 +50,7 @@ b = BasicProposition("Bike")
 # For a complete module reference, see https://bauhaus.readthedocs.io/en/latest/bauhaus.html
 
 
-@constraint.exactly_one(E)
+# @constraint.exactly_one(E)
 @proposition(E)
 class Rating:
 
@@ -69,7 +69,7 @@ r4 = Rating("4*")
 r5 = Rating("5*")
 
 
-@constraint.exactly_one(E)
+# @constraint.exactly_one(E)
 @proposition(E)
 class Price:
 
@@ -87,10 +87,11 @@ p3 = Price("$$$")
 p4 = Price("$$$$")
 
 
+# @constraint.exactly_one(E)
 @proposition(E)
 class Weather:
 
-    def __init_(self, data):
+    def __init__(self, data):
         self.data = data
 
     def __repr__(self):
@@ -102,8 +103,7 @@ n = Weather("Raining")
 w = Weather("Snowing")
 
 
-@constraint.add_exactly_one(E, Weather)
-@constraint.at_least_one(E)
+# @constraint.at_least_one(E)
 @proposition(E)
 class Service:
 
@@ -127,16 +127,21 @@ delivery = Service("Delivery")
 #  what the expectations are.
 def solution():
     # E.add_constraint(v | g | d | h | ~h | ~v | ~g | ~d)
-    E.add_constraint(~(~e & ~t & ~delivery))
-    E.add_constraint(
-        (~(n | w)) | (e & i))  # if it's raining or snowing, we want to be able to eat in (eatin and indoors).
-    E.add_constraint((e & (i | o)) | (~e & ~i & ~o))  # eat-in means there must be either indoor or outdoor seating
-    E.add_constraint(f >> t)  # fast-food restaurants have take-out
+    # E.add_constraint(~(~e & ~t & ~delivery))
 
     # TODO: code for loop to add constraints
 
-    # E.add_constraint(r3 >> (r3 | r4 | r5))
-    # E.add_constraint(r3 & p2)
+    constraint.add_exactly_one(E, Rating)
+    constraint.add_exactly_one(E, Price)
+    constraint.add_exactly_one(E, Weather)
+
+    constraint.add_at_least_one(E, Service)
+
+    # E.add_constraint(f >> t)  # fast-food restaurants have take-out
+    # E.add_constraint((e & (i | o)) | (~e & ~i & ~o))  # eat-in means there must be either indoor or outdoor seating
+    # E.add_constraint(
+    #     (~(n | w)) | (e & i))  # if it's raining or snowing, we want to be able to eat in (eatin and indoors).
+    # E.add_constraint()
 
     return E
 
