@@ -26,21 +26,21 @@ for i in range(10):
 '''
 
 # Basic Propositions
-f = BasicProposition("Fast-food")
+ff = BasicProposition("Fast-food")
 
 # Dietary restrictions
-v = BasicProposition("Vegetarian")
-d = BasicProposition("Dairy-free")
-g = BasicProposition("Gluten-free")
-h = BasicProposition("Halal")
+veg = BasicProposition("Vegetarian")
+dairy = BasicProposition("Dairy-free")
+gluten = BasicProposition("Gluten-free")
+halal = BasicProposition("Halal")
 
 # Seating location
-i = BasicProposition("Indoor")
-o = BasicProposition("Outdoor")
+indoor = BasicProposition("Indoor")
+outdoor = BasicProposition("Outdoor")
 
 # Parking
-c = BasicProposition("Vehicle")
-b = BasicProposition("Bike")
+vehicle = BasicProposition("Vehicle")
+bike = BasicProposition("Bike")
 
 
 # Different classes for propositions are useful because this allows for more dynamic constraint creation
@@ -98,9 +98,9 @@ class Weather:
         return f"{self.data}"
 
 
-s = Weather("Sunny")
-n = Weather("Raining")
-w = Weather("Snowing")
+sun = Weather("Sunny")
+rain = Weather("Raining")
+snow = Weather("Snowing")
 
 
 # @constraint.at_least_one(E)
@@ -115,8 +115,8 @@ class Service:
 
 
 # dine-in, take-out, delivery
-e = Service("Eat-in")
-t = Service("Take-out")
+eatin = Service("Eat-in")
+takeout = Service("Take-out")
 delivery = Service("Delivery")
 
 
@@ -126,22 +126,31 @@ delivery = Service("Delivery")
 #  This restriction is fairly minimal, and if there is any concern, reach out to the teaching staff to clarify
 #  what the expectations are.
 def solution():
-    # E.add_constraint(v | g | d | h | ~h | ~v | ~g | ~d)
-    # E.add_constraint(~(~e & ~t & ~delivery))
 
     # TODO: code for loop to add constraints
 
-    constraint.add_exactly_one(E, Rating)
-    constraint.add_exactly_one(E, Price)
-    constraint.add_exactly_one(E, Weather)
+    # If a person is willing to eat at a badly-rated restaurant, they would be happy to eat at a well-rated restaurant
+    # r1 >> r2 >> r3 >> r4 >> r5
+    constraint.add_implies_all(E, [r1], [r2, r3, r4, r5])
+    constraint.add_implies_all(E, [r2], [r3, r4, r5])
+    constraint.add_implies_all(E, [r3], [r4, r5])
+    constraint.add_implies_all(E, [r4], [r5])
 
-    constraint.add_at_least_one(E, Service)
+    # If a person is willing to pay $$$, then they would be happy to pay $$ or $ also.
+    # p4 >> p3 >> p2 >> p1
+    constraint.add_implies_all(E, [p4], [p3, p2, p1])
+    constraint.add_implies_all(E, [p3], [p2, p1])
+    constraint.add_implies_all(E, [p2], [p1])
 
-    # E.add_constraint(f >> t)  # fast-food restaurants have take-out
-    # E.add_constraint((e & (i | o)) | (~e & ~i & ~o))  # eat-in means there must be either indoor or outdoor seating
-    # E.add_constraint(
-    #     (~(n | w)) | (e & i))  # if it's raining or snowing, we want to be able to eat in (eatin and indoors).
-    # E.add_constraint()
+    constraint.add_exactly_one(E, Rating)  # a rating must exist
+    constraint.add_exactly_one(E, Price)  # a price must exist
+    constraint.add_exactly_one(E, Weather)  # weather must exist
+    constraint.add_at_least_one(E, Service)  # service must exist
+
+    E.add_constraint(ff >> takeout)  # 'fast food' restaurants have take-out
+    E.add_constraint(eatin | takeout | delivery)
+    E.add_constraint(eatin >> (indoor | outdoor))
+    E.add_constraint((rain | snow) >> indoor)
 
     return E
 
@@ -161,41 +170,50 @@ def displaySolution():
             # bauhaus doesn't like me, but I want each list of restaurants for each not acceptable property
             # for r in properties.restaurants_dict[key][lis[key]]:
             # reject += r #should be a list already, just does appends each element
-    # allowed = restaurantes - set(reject) #should perfore set difference
+    # allowed = restaurants - set(reject) #should perform set difference
     # pprint(allowed)
     result.sort()
     return result
 
 
 # trying to write a function to return corresponding restaurant
-# def getRestaurants():
-#     props = [0, 0, [], False, [], [], [], []]  # rating, price, dietary, fastFood, seating, parking, service, hours
-#     if not T.satisfiable():
-#         return props
-#     dietary = ["Vegetarian", "Dairy-Free", "Halal"]
-#     seating = ["Indoor", "Outdoor"]
-#     parking = ["Vehicle", "Bike"]
-#     service = ["Eat-in", "Take-out", "Delivery"]
-#     converted = properties.convert_properties()
-#     lis = displaySolution()
-#     for element in lis:
-#         if '*' in element:
-#             props[0] = (int(element[0]))
-#         elif '$' in element:
-#             props[1] = (len(element))
-#         elif element in dietary:
-#             props[2].append(element.lower())
-#         elif element == "Fast-food" and props[3] is False:
-#             props[3] = True
-#         elif element in seating:
-#             props[4].append(element.lower())
-#         elif element in parking:
-#             props[5].append(element.lower())
-#         elif element in service:
-#             props[6].append(element.lower())
-#     pprint(props)
-#     for j in range(len(props)):
-#         for key in converted[j]:
+def getRestaurants():
+    props = [0, 0, [], False, [], [], [], []]  # rating, price, dietary, fastFood, seating, parking, service, hours
+    if not T.satisfiable():
+        return props
+
+    dietary = ["Vegetarian", "Dairy-free", "Halal", "Gluten-free"]
+    seating = ["Indoor", "Outdoor"]
+    parking = ["Vehicle", "Bike"]
+    service = ["Eat-in", "Take-out", "Delivery"]
+
+    converted = properties.convert_properties()  # get restaurants sorted by properties
+    lis = displaySolution()  # get list of all True propositions (solution)
+    # for loop to add True propositions to props list
+    for element in lis:
+        if '*' in element:
+            props[0] = (int(element[0]))
+        elif '$' in element:
+            props[1] = (len(element))
+        elif element in dietary:
+            props[2].append(element.lower())
+        elif element == "Fast-food" and props[3] is False:
+            props[3] = True
+        elif element in seating:
+            props[4].append(element.lower())
+        elif element in parking:
+            props[5].append(element.lower())
+        elif element in service:
+            props[6].append(element.lower())
+    pprint(props)
+
+    restaurants = []
+    for j in range(len(props)):
+        for key in converted[j]:
+            if props[j] == key:
+                pass
+
+    return restaurants
 
 
 if __name__ == "__main__":
@@ -210,6 +228,7 @@ if __name__ == "__main__":
     print()
     pprint(displaySolution())
     print()
+    pprint(getRestaurants())
     # print("\nVariable likelihoods:")
     #   for v, vn in zip([a, b, c, x, y, z], 'abcxyz'):
     # Ensure that you only send these functions NNF formulas
