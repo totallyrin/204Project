@@ -77,7 +77,7 @@ restaurants_dict = {
                        ['bike'],
                        ['take-out', 'eat-in', 'delivery'],
                        {0: [7, 19], 4: [7, 20], 5: [7, 20]}],
-    'dairy-free Queen': [4,
+    'Dairy Queen': [4,
                          1,
                          ['vegetarian', 'halal'],
                          True,
