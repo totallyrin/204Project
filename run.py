@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from pprint import pprint
 from bauhaus import Encoding, proposition, constraint
 from bauhaus.utils import count_solutions, likelihood
@@ -127,13 +127,30 @@ class Day:
         return f"{self.data}"
 
 
-sun = Day("Sunday")
 mon = Day("Monday")
 tue = Day("Tuesday")
 wed = Day("Wednesday")
 thu = Day("Thursday")
 fri = Day("Friday")
 sat = Day("Saturday")
+sun = Day("Sunday")
+
+days = [mon, tue, wed, thu, fri, sat, sun]
+
+
+@proposition(E)
+class Time:
+
+    def __init__(self, data = None):
+        if data:
+            self.data = data
+        else:
+            today = datetime.today()
+            hour = today.hour + ((today.minute // 30) / 2)
+            self.data = {today.weekday():[hour, hour + 0.5]}
+
+    def __repr__(self):
+        return f"{self.data}"
 
 
 # Build an example full theory for your setting and return it.
@@ -143,6 +160,13 @@ sat = Day("Saturday")
 #  what the expectations are.
 def solution():
     # TODO: code for loop to add constraints
+
+    day = None
+
+    if type(day) is int and day in range(7):
+        E.add_constraint(days[day])
+    else:  # add current day of week
+        E.add_constraint(days[datetime.now().weekday()])
 
     # If a person is willing to eat at a badly-rated restaurant, they would be happy to eat at a well-rated restaurant
     # r1 >> r2 >> r3 >> r4 >> r5
