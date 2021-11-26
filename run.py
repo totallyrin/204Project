@@ -189,9 +189,10 @@ def solution():
     E.add_constraint(ff >> takeout)  # 'fast food' restaurants have take-out
     E.add_constraint(eatin | takeout | delivery)
     E.add_constraint(eatin >> (indoor | outdoor))
+    E.add_constraint((indoor | outdoor) >> eatin)
     E.add_constraint(((rain | snow) & eatin) >> indoor)
 
-    E.add_constraint(dairy & eatin & p2 & r4)
+    E.add_constraint(dairy & takeout & p2 & r4)
 
     return E
 
@@ -200,9 +201,8 @@ def displaySolution():
     if not T.satisfiable():
         return
     result = []
-    lis = T.solve()
-    for key in lis.keys():
-        if lis.get(key):  # create list of properties that fulfill all constraints
+    for key in sol.keys():
+        if sol.get(key):  # create list of properties that fulfill all constraints
             result.append(key.__repr__())
     result.sort()
     return result
@@ -289,7 +289,8 @@ if __name__ == "__main__":
     # of your model:
     print("\nSatisfiable: %s" % T.satisfiable())
     # print("# Solutions: %d" % count_solutions(T))
-    print("   Solution: %s" % T.solve())
+    sol = T.solve()
+    print("   Solution: %s" % sol)
     print()
     pprint(displaySolution())
     print()
