@@ -1,3 +1,4 @@
+import datetime
 from pprint import pprint
 from bauhaus import Encoding, proposition, constraint
 from bauhaus.utils import count_solutions, likelihood
@@ -50,7 +51,6 @@ bike = BasicProposition("Bike")
 # For a complete module reference, see https://bauhaus.readthedocs.io/en/latest/bauhaus.html
 
 
-# @constraint.exactly_one(E)
 @proposition(E)
 class Rating:
 
@@ -69,7 +69,6 @@ r4 = Rating("4*")
 r5 = Rating("5*")
 
 
-# @constraint.exactly_one(E)
 @proposition(E)
 class Price:
 
@@ -87,7 +86,6 @@ p3 = Price("$$$")
 p4 = Price("$$$$")
 
 
-# @constraint.exactly_one(E)
 @proposition(E)
 class Weather:
 
@@ -98,12 +96,11 @@ class Weather:
         return f"{self.data}"
 
 
-sun = Weather("Sunny")
+sunny = Weather("Sunny")
 rain = Weather("Raining")
 snow = Weather("Snowing")
 
 
-# @constraint.at_least_one(E)
 @proposition(E)
 class Service:
 
@@ -118,6 +115,25 @@ class Service:
 eatin = Service("Eat-in")
 takeout = Service("Take-out")
 delivery = Service("Delivery")
+
+
+@proposition(E)
+class Day:
+
+    def __init__(self, data):
+        self.data = data
+
+    def __repr__(self):
+        return f"{self.data}"
+
+
+sun = Day("Sunday")
+mon = Day("Monday")
+tue = Day("Tuesday")
+wed = Day("Wednesday")
+thu = Day("Thursday")
+fri = Day("Friday")
+sat = Day("Saturday")
 
 
 # Build an example full theory for your setting and return it.
@@ -179,7 +195,8 @@ def displaySolution():
 
 # trying to write a function to return corresponding restaurant
 def getRestaurants():
-    props = [0, 0, [], False, [], [], [], []]  # rating, price, dietary, fastFood, seating, parking, service, hours
+    props = [0, 0, [], False, [], [], [], [], []]  # rating, price, dietary, fastFood, seating, parking, service, day,
+    # hours
     if not T.satisfiable():
         return props
 

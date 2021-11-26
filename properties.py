@@ -1,6 +1,5 @@
 # file to store properties of different restaurants
 
-# num of seats
 from pprint import pprint
 
 prompts_dict = {"Name of the Establishment >> ": str,
