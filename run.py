@@ -141,13 +141,13 @@ days = [mon, tue, wed, thu, fri, sat, sun]
 @proposition(E)
 class Time:
 
-    def __init__(self, data = None):
+    def __init__(self, data=None):
         if data:
             self.data = data
         else:
             today = datetime.today()
             hour = today.hour + ((today.minute // 30) / 2)
-            self.data = {today.weekday():[hour, hour + 0.5]}
+            self.data = {today.weekday(): [hour, hour + 0.5]}
 
     def __repr__(self):
         return f"{self.data}"
