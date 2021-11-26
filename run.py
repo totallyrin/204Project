@@ -159,7 +159,7 @@ class Time:
 #  This restriction is fairly minimal, and if there is any concern, reach out to the teaching staff to clarify
 #  what the expectations are.
 def solution():
-    # TODO: code for loop to add constraints
+    # TODO? code for loop to add constraints
 
     day = None
 
@@ -200,19 +200,10 @@ def displaySolution():
     if not T.satisfiable():
         return
     result = []
-    restaurants = set(properties.restaurants_dict)
-    reject = []
     lis = T.solve()
     for key in lis.keys():
         if lis.get(key):  # create list of properties that fulfill all constraints
             result.append(key.__repr__())
-        else:  # remove those restaurants from consideration
-            pass
-            # bauhaus doesn't like me, but I want each list of restaurants for each not acceptable property
-            # for r in properties.restaurants_dict[key][lis[key]]:
-            # reject += r #should be a list already, just does appends each element
-    # allowed = restaurants - set(reject) #should perform set difference
-    # pprint(allowed)
     result.sort()
     return result
 
@@ -228,6 +219,7 @@ def getRestaurants():
     seating = ["Indoor", "Outdoor"]
     parking = ["Vehicle", "Bike"]
     service = ["Eat-in", "Take-out", "Delivery"]
+    day = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
     converted = properties.convert_properties()  # get restaurants sorted by properties
     lis = displaySolution()  # get list of all True propositions (solution)
@@ -247,6 +239,9 @@ def getRestaurants():
             props[5].append(element.lower())
         elif element in service:
             props[6].append(element.lower())
+        # elif element in day:
+        #     props[7] = day.index(element)
+        #     # TODO write proper code to get correct required day and time
 
     pprint(props)
 
