@@ -191,7 +191,7 @@ def solution():
     E.add_constraint(eatin >> (indoor | outdoor))
     E.add_constraint(((rain | snow) & eatin) >> indoor)
 
-    E.add_constraint(dairy & takeout & p2 & r4)
+    E.add_constraint(dairy & eatin & p2 & r4)
 
     return E
 
