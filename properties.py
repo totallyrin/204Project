@@ -43,7 +43,7 @@ restaurants_dict = {
                                 [],
                                 ['bike'],
                                 ['take-out'],
-                                {0: [], 1: [9, 17], 6: []}],
+                                {1: [9, 17], 0: [], 6: [11, 17]}],
     "Rahim's Cuisine": [4,
                         1,
                         ['halal', 'dairy-free'],

@@ -117,25 +117,25 @@ takeout = Service("Take-out")
 delivery = Service("Delivery")
 
 
-@proposition(E)
-class Day:
-
-    def __init__(self, data):
-        self.data = data
-
-    def __repr__(self):
-        return f"{self.data}"
-
-
-mon = Day("Monday")
-tue = Day("Tuesday")
-wed = Day("Wednesday")
-thu = Day("Thursday")
-fri = Day("Friday")
-sat = Day("Saturday")
-sun = Day("Sunday")
-
-days = [mon, tue, wed, thu, fri, sat, sun]
+# @proposition(E)
+# class Day:
+#
+#     def __init__(self, data):
+#         self.data = data
+#
+#     def __repr__(self):
+#         return f"{self.data}"
+#
+#
+# mon = Day("Monday")
+# tue = Day("Tuesday")
+# wed = Day("Wednesday")
+# thu = Day("Thursday")
+# fri = Day("Friday")
+# sat = Day("Saturday")
+# sun = Day("Sunday")
+#
+# days = [mon, tue, wed, thu, fri, sat, sun]
 
 
 @proposition(E)
@@ -146,11 +146,20 @@ class Time:
             self.data = data
         else:
             today = datetime.today()
-            hour = today.hour + ((today.minute // 30) / 2)
-            self.data = {today.weekday(): [hour, hour + 0.5]}
+            day = today.weekday()
+            # hour = today.hour + ((today.minute // 30) / 2) + 0.5  # floors to next half hour
+            hour = today.hour + (round(today.minute / 30) / 2)  # round at 15m
+            if hour == 24.0 or hour + 0.5 == 24.0:  # convert to next day if > 24
+                day = (day + 1) % 7
+                hour = 0.0
+            self.data = {day: [hour, hour + 0.5]}
 
     def __repr__(self):
         return f"{self.data}"
+
+
+t = Time()
+print(t)
 
 
 # Build an example full theory for your setting and return it.
@@ -161,12 +170,12 @@ class Time:
 def solution():
     # TODO? code for loop to add constraints
 
-    day = None
-
-    if type(day) is int and day in range(7):
-        E.add_constraint(days[day])
-    else:  # add current day of week
-        E.add_constraint(days[datetime.now().weekday()])
+    # day = None
+    #
+    # if type(day) is int and day in range(7):
+    #     E.add_constraint(days[day])
+    # else:  # add current day of week
+    #     E.add_constraint(days[datetime.today().weekday()])
 
     # If a person is willing to eat at a badly-rated restaurant, they would be happy to eat at a well-rated restaurant
     # r1 >> r2 >> r3 >> r4 >> r5
@@ -210,7 +219,8 @@ def displaySolution():
 
 # trying to write a function to return corresponding restaurant
 def getRestaurants():
-    props = [0, 0, [], False, [], [], [], [], []]  # rating, price, dietary, fastFood, seating, parking, service, day,
+    props = [0, 0, [], False, [], [], [], Time({4: [2, 2.5]})]  # rating, price, dietary, fastFood, seating, parking,
+    # service, day,
     # hours
     if not T.satisfiable():
         return props
@@ -219,7 +229,7 @@ def getRestaurants():
     seating = ["Indoor", "Outdoor"]
     parking = ["Vehicle", "Bike"]
     service = ["Eat-in", "Take-out", "Delivery"]
-    day = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    # day = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
     converted = properties.convert_properties()  # get restaurants sorted by properties
     lis = displaySolution()  # get list of all True propositions (solution)
@@ -239,9 +249,8 @@ def getRestaurants():
             props[5].append(element.lower())
         elif element in service:
             props[6].append(element.lower())
-        # elif element in day:
-        #     props[7] = day.index(element)
-        #     # TODO write proper code to get correct required day and time
+        elif type(element) is dict:
+            props[7] = element
 
     pprint(props)
 
@@ -258,7 +267,7 @@ def getRestaurants():
             temp.update(set(converted[1][item]))
     restaurants.intersection_update(temp)
 
-    for i in range(2, len(props) - 1):  # -1 for hours
+    for i in range(2, len(props) - 1):  # -1 for time
         if type(props[i]) is list and not props[i]:
             continue
         elif type(props[i]) is list:
@@ -277,6 +286,16 @@ def getRestaurants():
                 temp = temp.update(set(converted[i][item]))
         """
         restaurants.intersection_update(temp)
+
+    temp = set()
+    time_dict = eval(props[-1].__repr__())
+    # TODO: fix the below loops to actually give the correct output
+    for i in time_dict:
+        open_h = properties.fill_in_hours({i: time_dict[i]})
+        for j in range(48):
+            if open_h[j]:
+                temp.update(set(converted[-1][i][j / 2]))
+    restaurants.intersection_update(temp)
 
     return restaurants
 
