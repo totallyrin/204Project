@@ -136,10 +136,10 @@ def solution():
     # constraint.add_implies_all(E, [r4], [r5])
 
     # If a person is willing to pay $$$, then they would be happy to pay $$ or $ also.
-    # p4 >> p3 >> p2 >> p1
-    constraint.add_implies_all(E, [p4], [p3, p2, p1])
-    constraint.add_implies_all(E, [p3], [p2, p1])
-    constraint.add_implies_all(E, [p2], [p1])
+    # # p4 >> p3 >> p2 >> p1
+    # constraint.add_implies_all(E, [p4], [p3, p2, p1])
+    # constraint.add_implies_all(E, [p3], [p2, p1])
+    # constraint.add_implies_all(E, [p2], [p1])
 
     constraint.add_exactly_one(E, Rating)  # a rating must exist
     constraint.add_exactly_one(E, Price)  # a price must exist
@@ -149,7 +149,9 @@ def solution():
     E.add_constraint(ff >> takeout)  # 'fast food' restaurants have take-out
     E.add_constraint(eatin | takeout | delivery)
     E.add_constraint(eatin >> (indoor | outdoor))
-    E.add_constraint((rain | snow) >> indoor)
+    E.add_constraint(((rain | snow) & eatin) >> indoor)
+
+    E.add_constraint(dairy & takeout & p2 & r4)
 
     return E
 
@@ -205,20 +207,40 @@ def getRestaurants():
         elif element in service:
             props[6].append(element.lower())
 
+    pprint(props)
+
     restaurants = set()
 
     for item in converted[0]:
         if props[0] <= item:
-            restaurants = restaurants.union(set(converted[0][item]))
+            restaurants.update(set(converted[0][item]))
+
+    temp = set()
 
     for item in converted[1]:
         if props[1] >= item:
-            restaurants = restaurants.intersection(set(converted[1][item]))
+            temp.update(set(converted[1][item]))
+    restaurants.intersection_update(temp)
 
-    for i in range(2, len(props) - 1): # -1 for hours
+    for i in range(2, len(props) - 1):  # -1 for hours
+        if type(props[i]) is list and not props[i]:
+            continue
+        elif type(props[i]) is list:
+            temp = set()
+            for key in props[i]:
+                # if key in converted[i]:
+                temp.update(set(converted[i][key]))
+            restaurants.intersection_update(temp)
+        else:
+            restaurants.intersection_update(set(converted[i][props[i]]))
+        """
         for item in converted[i]:
+            if type(props[i]) is list and item in props[i]:
+        
             if props[i] == item:
-                restaurants = restaurants.intersection(set(converted[i][item]))
+                temp = temp.update(set(converted[i][item]))
+        """
+        restaurants.intersection_update(temp)
 
     return restaurants
 
