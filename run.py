@@ -117,27 +117,6 @@ takeout = Service("Take-out")
 delivery = Service("Delivery")
 
 
-# @proposition(E)
-# class Day:
-#
-#     def __init__(self, data):
-#         self.data = data
-#
-#     def __repr__(self):
-#         return f"{self.data}"
-#
-#
-# mon = Day("Monday")
-# tue = Day("Tuesday")
-# wed = Day("Wednesday")
-# thu = Day("Thursday")
-# fri = Day("Friday")
-# sat = Day("Saturday")
-# sun = Day("Sunday")
-#
-# days = [mon, tue, wed, thu, fri, sat, sun]
-
-
 @proposition(E)
 class Time:
 
@@ -159,7 +138,6 @@ class Time:
 
 
 t = Time()
-print(t)
 
 
 # Build an example full theory for your setting and return it.
@@ -168,40 +146,64 @@ print(t)
 #  This restriction is fairly minimal, and if there is any concern, reach out to the teaching staff to clarify
 #  what the expectations are.
 def solution():
-    # TODO? code for loop to add constraints
+    # TODO: User input to add constraints below
 
-    # day = None
-    #
-    # if type(day) is int and day in range(7):
-    #     E.add_constraint(days[day])
-    # else:  # add current day of week
-    #     E.add_constraint(days[datetime.today().weekday()])
+    props = ['Rating (1-5): ', 'Price (1-4): ', 'Dietary restrictions(d/g/h/v): ', 'Fast-food (y/n): ',
+             'Seating (in/out): ', 'Parking (bike/vehicle): ', 'Service (eat-in/take-out/delivery): ',
+             'Day Mon-Sun (0-6): ', 'Time (24h .5): ', 'Weather (rain/snow/sun): ']
+    print('Input specific requirements below. Leave empty for any.')
+    for i in range(len(props)):
+        props[i] = input(props[i])
+        if props[i] == '':
+            props[i] = None
+        elif i < 2:
+            try:
+                props[i] = int(props[i])
+            except ValueError:
+                props[i] = None
+        elif i == 2:
+            props[i] = []
+            if 'd' in props[i].lower() or 'g' in props[i].lower() or 'h' in props[i].lower() or 'v' in props[i].lower():
+                if 'd' in props[i].lower():
+                    props[i].append('d')
+                if 'g' in props[i].lower():
+                    props[i].append('g')
+                if 'h' in props[i].lower():
+                    props[i].append('h')
+                if 'v' in props[i].lower():
+                    props[i].append('v')
+            else:
+                props[i] = None
 
-    # If a person is willing to eat at a badly-rated restaurant, they would be happy to eat at a well-rated restaurant
-    # r1 >> r2 >> r3 >> r4 >> r5
-    # constraint.add_implies_all(E, [r1], [r2, r3, r4, r5])
-    # constraint.add_implies_all(E, [r2], [r3, r4, r5])
-    # constraint.add_implies_all(E, [r3], [r4, r5])
-    # constraint.add_implies_all(E, [r4], [r5])
+    print(props)
 
-    # If a person is willing to pay $$$, then they would be happy to pay $$ or $ also.
-    # # p4 >> p3 >> p2 >> p1
-    # constraint.add_implies_all(E, [p4], [p3, p2, p1])
-    # constraint.add_implies_all(E, [p3], [p2, p1])
-    # constraint.add_implies_all(E, [p2], [p1])
+    # for con in props:
 
-    constraint.add_exactly_one(E, Rating)  # a rating must exist
-    constraint.add_exactly_one(E, Price)  # a price must exist
-    constraint.add_exactly_one(E, Weather)  # weather must exist
-    constraint.add_at_least_one(E, Service)  # service must exist
+    # If no rating specified, set lowest rating
+    if props[0] is None:
+        E.add_constraint(r1)
+    # If no price specified, set most expensive price
+    if props[1] is None:
+        E.add_constraint(p4)
+    # If seating specified, eat-in is required
+    if props[4] is not None:
+        E.add_constraint(eatin)
+    # If no service preference specified, set any
+    if props[6] is None:
+        E.add_constraint(eatin | takeout | delivery)
+    # If eat-in, then there must be seating
+    elif props[6] == 'e':
+        E.add_constraint(eatin >> (indoor | outdoor))
+
+    # constraint.add_exactly_one(E, Rating)  # a rating must exist
+    # constraint.add_exactly_one(E, Price)  # a price must exist
+    # constraint.add_exactly_one(E, Weather)  # weather must exist
+    # constraint.add_at_least_one(E, Service)  # service must exist
 
     E.add_constraint(ff >> takeout)  # 'fast food' restaurants have take-out
-    E.add_constraint(eatin | takeout | delivery)
-    E.add_constraint(eatin >> (indoor | outdoor))
+    # E.add_constraint(eatin >> (indoor | outdoor))
     E.add_constraint((indoor | outdoor) >> eatin)
     E.add_constraint(((rain | snow) & eatin) >> indoor)
-
-    E.add_constraint(dairy & takeout & p2 & r4)
 
     return E
 
@@ -219,9 +221,8 @@ def displaySolution():
 
 # trying to write a function to return corresponding restaurant
 def getRestaurants():
-    props = [0, 0, [], False, [], [], [], Time({4: [2, 2.5]})]  # rating, price, dietary, fastFood, seating, parking,
-    # service, day,
-    # hours
+    props = [0, 0, [], False, [], [], [], Time()]  # rating, price, dietary, fastFood, seating, parking,
+    # service, day, hours
     if not T.satisfiable():
         return props
 
@@ -251,8 +252,6 @@ def getRestaurants():
             props[6].append(element.lower())
         elif type(element) is dict:
             props[7] = element
-
-    pprint(props)
 
     restaurants = set()
 
@@ -289,9 +288,8 @@ def getRestaurants():
 
     temp = set()
     time_dict = eval(props[-1].__repr__())
-    # TODO: fix the below loops to actually give the correct output
     for i in time_dict:
-        open_h = properties.fill_in_hours({i: time_dict[i]})
+        open_h = properties.fill_in_hours(time_dict[i])
         for j in range(48):
             if open_h[j]:
                 temp.update(set(converted[-1][i][j / 2]))
