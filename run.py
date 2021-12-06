@@ -151,29 +151,86 @@ def solution():
     props = ['Rating (1-5): ', 'Price (1-4): ', 'Dietary restrictions(d/g/h/v): ', 'Fast-food (y/n): ',
              'Seating (in/out): ', 'Parking (bike/vehicle): ', 'Service (eat-in/take-out/delivery): ',
              'Day Mon-Sun (0-6): ', 'Time (24h .5): ', 'Weather (rain/snow/sun): ']
-    print('Input specific requirements below. Leave empty for any.')
+
+    print('Input specific requirements below. Leave empty for any/not important. For multiple, separate with space.')
+
     for i in range(len(props)):
-        props[i] = input(props[i])
+        props[i] = input(props[i]).lower()
+        # if input left empty choose random
         if props[i] == '':
             props[i] = None
+        # if rating or price (numerical) try get int except choose random
         elif i < 2:
             try:
                 props[i] = int(props[i])
             except ValueError:
                 props[i] = None
+        # dietary
         elif i == 2:
-            props[i] = []
-            if 'd' in props[i].lower() or 'g' in props[i].lower() or 'h' in props[i].lower() or 'v' in props[i].lower():
-                if 'd' in props[i].lower():
-                    props[i].append('d')
-                if 'g' in props[i].lower():
-                    props[i].append('g')
-                if 'h' in props[i].lower():
-                    props[i].append('h')
-                if 'v' in props[i].lower():
-                    props[i].append('v')
+            temp = None
+            for letter in props[i]:
+                if letter in ('d', 'g', 'h', 'v'):
+                    if temp is None:
+                        temp = set()
+                    temp.add(letter)
+            props[i] = temp
+        # ff
+        elif i == 3:
+            if 'y' in props[i]:
+                props[i] = True
+            elif 'n' in props[i]:
+                props[i] = False
             else:
                 props[i] = None
+        # seating
+        elif i == 4:
+            if 'in' in props[i]:
+                props[i] = 'in'
+            elif 'out' in props[i]:
+                props[i] = 'out'
+            else:
+                props[i] = None
+        # parking
+        elif i == 5:
+            if 'v' or 'c' in props[i]:
+                props[i] = 'v'
+            elif 'b' in props[i]:
+                props[i] = 'b'
+            else:
+                props[i] = None
+        # service
+        elif i == 6:
+            props[i] = props[i].split()
+            svc = ('in', 'out', 'd')
+            temp = None
+            for ser in props[i]:
+                for s in svc:
+                    if s in props[i]:
+                        if temp is None:
+                            temp = set()
+                        temp.add(ser)
+            props[i] = temp
+        # day
+        elif i == 7:
+            try:
+                props[i] = int(props[i])
+                if props[i] > 6 or props[i] < 0:
+                    props[i] = None
+            except ValueError:
+                props[i] = None
+        # time
+        # TODO: not sure how to implement this?
+        # weather
+        elif i == 9:
+            props[i] = props[i].split()
+            temp = None
+            for letter in props[i]:
+                if letter in ('r', 'sn', 'su'):
+                    if temp is None:
+                        temp = set()
+                    temp.add(letter)
+            props[i] = temp
+
 
     print(props)
 
@@ -192,7 +249,7 @@ def solution():
     if props[6] is None:
         E.add_constraint(eatin | takeout | delivery)
     # If eat-in, then there must be seating
-    elif props[6] == 'e':
+    elif 'in' in props[6]:
         E.add_constraint(eatin >> (indoor | outdoor))
 
     # constraint.add_exactly_one(E, Rating)  # a rating must exist
