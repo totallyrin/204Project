@@ -29,11 +29,21 @@ for i in range(10):
 # Basic Propositions
 ff = BasicProposition("Fast-food")
 
+
+@proposition(E)
+class Dietary:
+
+    def __init__(self, data):
+        self.data = data
+
+    def __repr__(self):
+        return f"{self.data}"
+    
 # Dietary restrictions
-veg = BasicProposition("Vegetarian")
-dairy = BasicProposition("Dairy-free")
-gluten = BasicProposition("Gluten-free")
-halal = BasicProposition("Halal")
+dv = Dietary("Vegetarian")
+dd = Dietary("Dairy-free")
+dg = Dietary("Gluten-free")
+dh = Dietary("Halal")
 
 # Seating location
 indoor = BasicProposition("Indoor")
@@ -116,10 +126,8 @@ eatin = Service("Eat-in")
 takeout = Service("Take-out")
 delivery = Service("Delivery")
 
-
 @proposition(E)
 class Time:
-
     def __init__(self, data=None):
         if data:
             self.data = data
@@ -137,7 +145,7 @@ class Time:
         return f"{self.data}"
 
 
-t = Time()
+time = Time()
 
 
 # Build an example full theory for your setting and return it.
@@ -149,29 +157,26 @@ def solution():
     # TODO: User input to add constraints below
 
     props = ['Rating (1-5): ', 'Price (1-4): ', 'Dietary restrictions(d/g/h/v): ', 'Fast-food (y/n): ',
-             'Seating (in/out): ', 'Parking (bike/vehicle): ', 'Service (eat-in/take-out/delivery): ',
-             'Day Mon-Sun (0-6): ', 'Time (24h .5): ', 'Weather (rain/snow/sun): ']
+             'Seating (in/out): ', 'Parking ([b]ike/[v]ehicle): ', 'Service (eat-[in]/take-[out]/[d]elivery): ',
+             'Day Mon-Sun (0-6): ', 'Time (0:00 ~ 23:59): ', 'Weather ([r]ain/[sn]ow/[su]n): ']
 
     print('Input specific requirements below. Leave empty for any/not important. For multiple, separate with space.')
 
+    '''performs input validation, so that constraints can be freely added
+        without worrying about exec() accessing something it shouldn't'''
     for i in range(len(props)):
         props[i] = input(props[i]).lower()
-        # if input left empty choose random
-        if props[i] == '':
-            props[i] = None
         # if rating or price (numerical) try get int except choose random
-        elif i < 2:
+        if i < 2:
             try:
                 props[i] = int(props[i])
             except ValueError:
                 props[i] = None
         # dietary
         elif i == 2:
-            temp = None
+            temp = set()
             for letter in props[i]:
                 if letter in ('d', 'g', 'h', 'v'):
-                    if temp is None:
-                        temp = set()
                     temp.add(letter)
             props[i] = temp
         # ff
@@ -182,14 +187,14 @@ def solution():
                 props[i] = False
             else:
                 props[i] = None
-        # seating
+        # seating - can't specify not indoor/not outdoor yet
         elif i == 4:
+            temp = []
             if 'in' in props[i]:
-                props[i] = 'in'
-            elif 'out' in props[i]:
-                props[i] = 'out'
-            else:
-                props[i] = None
+                temp.append('indoor')
+            if 'out' in props[i]:
+                temp.append('outdoor')
+            props[i] = temp
         # parking
         elif i == 5:
             if 'v' or 'c' in props[i]:
@@ -201,56 +206,82 @@ def solution():
         # service
         elif i == 6:
             props[i] = props[i].split()
-            svc = ('in', 'out', 'd')
-            temp = None
+            svc = ('in', 'out', 'd') # might grab the d in [in/out]doors
+            temp = set()
             for ser in props[i]:
                 for s in svc:
                     if s in props[i]:
-                        if temp is None:
-                            temp = set()
-                        temp.add(ser)
+                        temp.add(s)
             props[i] = temp
         # day
         elif i == 7:
             try:
                 props[i] = int(props[i])
-                if props[i] > 6 or props[i] < 0:
+                if 0 > props[i] > 6:
                     props[i] = None
             except ValueError:
                 props[i] = None
         # time
-        # TODO: not sure how to implement this?
+        elif i == 8:
+            try:
+                props[i] = [int(j) for j in props[i].split(':')]
+                if len(props[i]) == 1:
+                    props[i].append(0)
+                if 0 > props[i][0] > 23 or 0 > props[i][1] > 59:
+                    props[i] = None
+                tempus = props[8][0] + (round(props[8][1] / 30) / 2)
+                global time
+                # if hour isn't specified, the day probably doesn't matter either, so default to now
+                time = Time({props[7] if props[7] is not None else datetime.today().weekday():
+                             [tempus, tempus + 0.5]})
+            except ValueError:
+                props[i] = None
+        
         # weather
         elif i == 9:
-            props[i] = props[i].split()
-            temp = None
-            for letter in props[i]:
-                if letter in ('r', 'sn', 'su'):
-                    if temp is None:
-                        temp = set()
-                    temp.add(letter)
-            props[i] = temp
+            if props[i] not in ('r', 'sn', 'su'):
+                props[i] = None
 
+##    print(props)
 
-    print(props)
-
-    # for con in props:
+    # for con in props
 
     # If no rating specified, set lowest rating
-    if props[0] is None:
-        E.add_constraint(r1)
+    E.add_constraint(r1 if props[0] is None else eval('r'+str(props[0])))
     # If no price specified, set most expensive price
-    if props[1] is None:
-        E.add_constraint(p4)
+    E.add_constraint(p4 if props[1] is None else eval('p'+str(props[1])))
+    
+    for restriction in props[2]:
+        E.add_constraint(eval('d'+restriction))
+    # fast food
+    if props[3] is True:
+        E.add_constraint(ff)
+    elif props[3] is False:
+        E.add_constraint(~ff)
+        
     # If seating specified, eat-in is required
     if props[4] is not None:
+        for r in props[4]:
+            E.add_constraint(eval(r))
         E.add_constraint(eatin)
+        
     # If no service preference specified, set any
     if props[6] is None:
         E.add_constraint(eatin | takeout | delivery)
-    # If eat-in, then there must be seating
-    elif 'in' in props[6]:
-        E.add_constraint(eatin >> (indoor | outdoor))
+    else:
+        if 'in' in props[6]:
+            E.add_constraint(eatin)
+            # If eat-in, then there must be seating
+            E.add_constraint(eatin >> (indoor | outdoor))
+        if 'out' in props[6]:
+            E.add_constraint(takeout)
+        if 'd' in props[6]:
+            E.add_constraint(delivery)
+            
+    '''the current time and weather are not particularly negotiable,
+        so they're not constrained here as if they're adjustable'''
+
+    
 
     # constraint.add_exactly_one(E, Rating)  # a rating must exist
     # constraint.add_exactly_one(E, Price)  # a price must exist
@@ -278,11 +309,11 @@ def displaySolution():
 
 # trying to write a function to return corresponding restaurant
 def getRestaurants():
-    props = [0, 0, [], False, [], [], [], Time()]  # rating, price, dietary, fastFood, seating, parking,
+    props = [0, 0, [], False, [], [], [], time]  # rating, price, dietary, fastFood, seating, parking,
     # service, day, hours
     if not T.satisfiable():
         return props
-
+##    print(props)
     dietary = ["Vegetarian", "Dairy-free", "Halal", "Gluten-free"]
     seating = ["Indoor", "Outdoor"]
     parking = ["Vehicle", "Bike"]
@@ -361,14 +392,17 @@ if __name__ == "__main__":
     T = T.compile()
     # After compilation (and only after), you can check some of the properties
     # of your model:
-    print("\nSatisfiable: %s" % T.satisfiable())
+##    print("\nSatisfiable: %s" % T.satisfiable())
     # print("# Solutions: %d" % count_solutions(T))
     sol = T.solve()
+    '''
     print("   Solution: %s" % sol)
-    print()
-    pprint(displaySolution())
-    print()
-    print(getRestaurants())
+    print(time.__repr__)
+    print(displaySolution())
+    '''
+    print('\n' + '-'*100)
+    options_list = getRestaurants()
+    print(options_list if options_list else "Maybe try deselecting some requirements, or adding more restaurants!")
     # print("\nVariable likelihoods:")
     #   for v, vn in zip([a, b, c, x, y, z], 'abcxyz'):
     # Ensure that you only send these functions NNF formulas
