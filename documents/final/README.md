@@ -1,4 +1,4 @@
-# CISC/CMPE 204 Modelling Project
+# CISC/CMPE 204 Modelling Project Final Submission
 
 Welcome to the major project for CISC/CMPE 204 (Fall 2021)!
 
@@ -8,7 +8,6 @@ By taking boolean values for what can be tolerated of a restaurant, we can rule 
 ## Structure
 
 * `proofs.jp`: Jape file containing sequents, as well as their proofs.
-* `documents`: Contains folders. README.md files are included in both.
 * `report.pdf`: The documentation of our project.
 * `properties.py`: Holds our dictionary of restaurants. Tons of helper methods to handle abstraction and input.
 * `run.py`: General wrapper script. Our propositions and constraints.
