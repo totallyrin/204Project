@@ -1,13 +1,15 @@
-# Modelling Project Final Submission
+# CISC/CMPE 204 Modelling Project
 
-This folder should contain the extra documents for the deliverables (D3) - (D5)
+Welcome to the major project for CISC/CMPE 204 (Fall 2021)!
 
-## Due Date
+Our project seeks to apply logic to choosing where to eat.
+By taking boolean values for what can be tolerated of a restaurant, we can rule out all of the establishments with the click of a button.
 
-December 3rd, 2021
+## Structure
 
-## Expected Items
-
-* *this repository*: We will download the most recent version of your project (including this folder) on the due date.
 * `proofs.jp`: Jape file containing sequents, as well as their proofs.
-* `modelling_report.docx` or `modelling_report.pptx` or (`report.txt` and `report.pdf`): Include either the Word/PowerPoint document for your documentation, or a link to the OverLeaf project inside of `report.txt` if that is what you chose to use for (D5). If you are using OverLeaf, include a compiled version here as `report.pdf`.
+* `documents`: Contains folders. README.md files are included in both.
+* `report.pdf`: The documentation of our project.
+* `properties.py`: Holds our dictionary of restaurants. Tons of helper methods to handle abstraction and input.
+* `run.py`: General wrapper script. Our propositions and constraints.
+* `test.py`: Run this file to confirm that your submission has everything required. This essentially just means it will check for the right files and sufficient theory size.
