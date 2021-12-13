@@ -8,7 +8,7 @@ By taking boolean values for what can be tolerated of a restaurant, we can rule 
 ## Structure
 
 * `proofs.jp`: Jape file containing sequents, as well as their proofs.
-* `report.pdf`: The documentation of our project.
-* `properties.py`: Holds our dictionary of restaurants. Tons of helper methods to handle abstraction and input.
+* `report.pdf`: The text documentation of our project.
+* `properties.py`: Holds our dictionary of restaurants. Helper methods to handle abstraction and input.
 * `run.py`: General wrapper script. Our propositions and constraints.
 * `test.py`: Run this file to confirm that your submission has everything required. This essentially just means it will check for the right files and sufficient theory size.
