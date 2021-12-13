@@ -73,11 +73,9 @@ class Rating:
 
 
 # Rating
-r1 = Rating("1*")
-r2 = Rating("2*")
-r3 = Rating("3*")
-r4 = Rating("4*")
-r5 = Rating("5*")
+for i in range(1,6):
+    exec('r' + str(i) + " = Rating('" + str(i) + "*')")
+# literally r1 = Rating('1*')
 
 
 @proposition(E)
@@ -91,10 +89,9 @@ class Price:
 
 
 # Price ($ or $$ or $$$ or $$$$)
-p1 = Price("$")
-p2 = Price("$$")
-p3 = Price("$$$")
-p4 = Price("$$$$")
+for i in range(1,5):
+    exec('p' + str(i) + " = Rating('" + '$'*i + "')")
+# literally p1 = Price('$')
 
 
 @proposition(E)
@@ -132,6 +129,10 @@ def hour_float(hour, minute):
 
 @proposition(E)
 class Time:
+    '''The proposition containing the dictionary showing when the
+        group is available.
+       The default input method works with only one day at a time, but
+        multiple days can be accessed with a single query.'''
     def __init__(self, data=None):
         if data:
             self.data = data
@@ -147,8 +148,6 @@ class Time:
 
     def __repr__(self):
         return f"{self.data}"
-
-
 time = Time()
 
 
@@ -292,44 +291,44 @@ def solution():
     '''the current time and weather are not particularly negotiable,
         so they're not constrained here as if they're adjustable'''
 
-    
-
-    # constraint.add_exactly_one(E, Rating)  # a rating must exist
-    # constraint.add_exactly_one(E, Price)  # a price must exist
-    # constraint.add_exactly_one(E, Weather)  # weather must exist
-    # constraint.add_at_least_one(E, Service)  # service must exist
-
     E.add_constraint(ff >> takeout)  # 'fast food' restaurants have take-out
-    # E.add_constraint(eatin >> (indoor | outdoor))
+    # seating types implies sit-down availability is also necessary
     E.add_constraint((indoor | outdoor) >> eatin)
+    # indoor necessary if eating at the restaurant and outside has weather
     E.add_constraint(((rain | snow) & eatin) >> indoor)
 
     return E
 
 
 def displaySolution():
+    '''outputs a list of only the required factors, as compared to Bauhaus
+        normally outputting a list of $constraint: True/False for every
+        constraint.'''
     if not T.satisfiable():
         return
     result = []
-    for key in sol.keys():
+    for key in sol.keys(): # sol is the produced solution
         if sol.get(key):  # create list of properties that fulfill all constraints
             result.append(key.__repr__())
     result.sort()
     return result
 
 
-# trying to write a function to return corresponding restaurant
 def getRestaurants():
-    props = [0, 0, [], False, [], [], [], time]  # rating, price, dietary, fastFood, seating, parking,
-    # service, day, hours
+    '''returns a set of the restaurants that fulfill the requirements
+        refers to properties.py for a list of all restaurants
+       does so by first collecting constraints in a format to work with
+        properties.py, then applying set intersection to retain only
+        acceptable establishments.'''
+    
+    # rating, price, dietary, fastFood, seating, parking, service, day, hours
+    props = [0, 0, [], False, [], [], [], time]
     if not T.satisfiable():
         return props
-##    print(props)
     dietary = ["Vegetarian", "Dairy-free", "Halal", "Gluten-free"]
     seating = ["Indoor", "Outdoor"]
     parking = ["Vehicle", "Bike"]
     service = ["Eat-in", "Take-out", "Delivery"]
-    # day = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
     converted = properties.convert_properties()  # get restaurants sorted by properties
     lis = displaySolution()  # get list of all True propositions (solution)
@@ -371,7 +370,6 @@ def getRestaurants():
         elif type(props[i]) is list:
             temp = set()
             for key in props[i]:
-                # if key in converted[i]:
                 temp.update(set(converted[i][key]))
             restaurants.intersection_update(temp)
         else:
@@ -407,28 +405,32 @@ def getRestaurants():
 
 
 if __name__ == "__main__":
-    T = solution()
+    T = solution() # default option is to try your own inputs
+    
     # Don't compile until you're finished adding all your constraints!
     T = T.compile()
+
+    # these don't actually work, because compiling adds more metadata than
+    #  can be shown here, but this is what it outputs as a compiled solution
+    '''quick cheap drive-thru take-out at 1 on a ~~~Tuesday night~~ Wednesday morning'''
+##    T = And({Or({Or({~Var(Eat-in), And({~Var(Raining), ~Var(Snowing)})}), Var(Indoor)}), Or({Var(Eat-in), And({~Var(Indoor), ~Var(Outdoor)})}), Or({Var(Take-out), ~Var(Fast-food)}), Var(Take-out), Var(Eat-in), Var(Fast-food), Var(1*), Var($)})
+    '''Saturday night out at a fancy vegan restaurant, if a little expensive'''
+##    T = And({Var(Indoor), Or({Var(Indoor), Or({And({~Var(Snowing), ~Var(Raining)}), ~Var(Eat-in)})}), Var(Eat-in), ~Var(Fast-food), Var($$$), Var(Dairy-free), Var(5*), Or({Var(Take-out), ~Var(Fast-food)}), Or({Or({Var(Indoor), Var(Outdoor)}), ~Var(Eat-in)}), Var(Vegetarian), Or({And({~Var(Indoor), ~Var(Outdoor)}), Var(Eat-in)})})
+    
     # After compilation (and only after), you can check some of the properties
     # of your model:
 ##    print("\nSatisfiable: %s" % T.satisfiable())
     # print("# Solutions: %d" % count_solutions(T))
+
     sol = T.solve()
-    '''
-    print("   Solution: %s" % sol)
-    '''
-##    print(time.__repr__())
-    '''
-    print(displaySolution())
-    '''
+
+##    print("   Solution: %s" % sol)    
+##    print(time.__repr__())    
+##    print(displaySolution())
+    
     print('\n' + '-'*100)
     options_list = getRestaurants()
     print(options_list if options_list else
           "Maybe try adjusting some requirements, or adding new restaurants!")
-    # print("\nVariable likelihoods:")
-    #   for v, vn in zip([a, b, c, x, y, z], 'abcxyz'):
-    # Ensure that you only send these functions NNF formulas
-    # Literals are compiled to NNF here
-    #        print(" %s: %.2f" % (vn, likelihood(T, v)))
+
     print()
